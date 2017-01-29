@@ -11,8 +11,8 @@ namespace DotSpinners
         Dots,
         DotsScrolling,
         DotsSimple,
-        DotRolling,
-        DotShifter,
+        DotsRolling,
+        DotsShifter,
         Classic,
         Classic2,
         Ping,
@@ -23,6 +23,15 @@ namespace DotSpinners
         PercentageFive,
         RugCrawler,
         HappyBeast,
-        Eyes
+        Eyes,
+        Ooh,
+        Brackets,
+        Pulse,
+        HashFest,
+        Matrix,
+        Flippie,
+        Loading,
+        Unspecified,
+        Money
     }
 }
