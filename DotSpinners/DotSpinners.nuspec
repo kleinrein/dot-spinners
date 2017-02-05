@@ -6,13 +6,12 @@
     <title>$title$</title>
     <authors>$author$</authors>
     <owners>$author$</owners>
-    <licenseUrl></licenseUrl>
-    <projectUrl>http://PROJECT_URL_HERE_OR_DELETE_THIS_LINE</projectUrl>
-    <iconUrl>http://ICON_URL_HERE_OR_DELETE_THIS_LINE</iconUrl>
+    <licenseUrl>https://opensource.org/licenses/MIT</licenseUrl>
+    <projectUrl>https://github.com/kleinrein/dot-spinners</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>$description$</description>
     <releaseNotes>Release 1.0.0.0</releaseNotes>
-    <copyright>Copyright 2017</copyright>
-    <tags>CliSpinner Spinner</tags>
+    <copyright>Copyright Andreas Rein 2017</copyright>
+    <tags>CliSpinner Console Spinner</tags>
   </metadata>
 </package>
