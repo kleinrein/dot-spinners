@@ -1,8 +1,7 @@
 # DotSpinners
 Console spinners in .NET
 
-![](https://github.com/kleinrein/dot-spinners/blob/master/DotSpinners.Resources/DotSpinners.gif)
-
+<img src="https://github.com/kleinrein/dot-spinners/blob/master/DotSpinners.Resources/DotSpinners.gif" width="200">
 
 ## Usage
 The public API is small and supports method chaining.
