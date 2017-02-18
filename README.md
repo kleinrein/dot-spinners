@@ -1,6 +1,6 @@
+<img src="https://raw.githubusercontent.com/kleinrein/dot-spinners/master/DotSpinners.Resources/DotSpinners.png" width="200">
 # DotSpinners
 Console spinners in .NET
-
 <img src="https://github.com/kleinrein/dot-spinners/blob/master/DotSpinners.Resources/DotSpinners.gif" width="600">
 
 ## Install
@@ -12,19 +12,15 @@ Install-Package DotSpinners
 ## Usage
 The public API is small and supports method chaining.
 ```c#
-new DotSpinner(SpinnerTypes.Dots).Start();
+private static async Task DoWork() => await Task.Run(() => DoMoreWork());
 
-// Or
-
-var spinner = new DotSpinner(SpinnerTypes.Classic);
-spinner.Time(5);
-spinner.Interval(50);
-spinner.Start();
-
-Thread.Sleep(4000);
-
-spinner.Stop();
+// Spin until passed task is completed (Reccomended)
+new DotSpinner(SpinnerTypes.Pulse, DoWork()).Start();
 ```
+
+### Spinnertypes
+There is 25 spinnertypes to choose from. All of them can be found in this comma separated file:
+https://github.com/kleinrein/dot-spinners/blob/master/DotSpinners/spinners.txt
 
 ## License
 [The MIT License (MIT)](https://opensource.org/licenses/MIT)
