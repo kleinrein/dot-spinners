@@ -15,13 +15,21 @@ namespace DotSpinners.Console
             GifDemo();   
         }
 
+        private static void DoWork()
+        {
+            Thread.Sleep(2000);
+        }
+
+        private static async Task DoIt()
+        {
+            await Task.Run(() => DoWork());
+        }
+
         private static void GifDemo()
         {
-            System.Console.ReadLine();
-
-            // Demo
-            System.Console.WriteLine("Dots");
-            new DotSpinner(SpinnerTypes.Dots).Time(2).Start();
+            // Demos
+            new DotSpinner(SpinnerTypes.Classic, DoIt()).Start();
+            
             System.Console.Clear();
             System.Console.WriteLine();
 

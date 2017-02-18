@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading;
-using System.Timers;
+using System.Threading.Tasks;
 using DotSpinners.Models;
 using DotSpinners.Properties;
 
@@ -16,7 +16,6 @@ namespace DotSpinners
     {
         // Properties
         public TextAlignment TextAlignment { get; set; }
-
         private List<Spinner> Spinners { get; } = new List<Spinner>();
         private Spinner Spinner { get; set; }
 
@@ -25,19 +24,25 @@ namespace DotSpinners
         private int? _interval;
         private readonly Stopwatch _stopwatch = new Stopwatch();
         private bool _active = false;
-        private Random _rand = new Random();
+        private readonly Random _rand = new Random();
+        private readonly Task _task;
 
-        public DotSpinner()
+        /// <summary>
+        /// Will run until task is completed if task is passed
+        /// </summary>
+        /// <param name="task"></param>
+        public DotSpinner(Task task = null)
         {
+            _task = task;
             LoadSpinners();
             Random();
         }
 
-        public DotSpinner(SpinnerTypes spinnerType) : this()
+        public DotSpinner(SpinnerTypes spinnerType, Task task = null) : this(task)
         {
             this.Spinner = Spinners.FirstOrDefault(e => e.Name == spinnerType);
         }
-
+        
         /// <summary>
         /// Set looping time for spin
         /// If time is not set, it will go on until Stop() is called
@@ -93,23 +98,12 @@ namespace DotSpinners
             int counter = -1;
 
             if (_time != 0) _stopwatch.Start();
-            while (_active)
+            while (!_task?.IsCompleted ?? _active)
             {
-                counter++;
-
-                // Loop spinner when it has reach it's last frame
-                if (counter >= Spinner.Sequence.Length)
-                    counter = 0;
-
-                // Align text if center is on
-                SetAlignment(counter);
-
-                // Write and set cursor position
-                Console.Write(Spinner.Sequence[counter]);
-                Console.SetCursorPosition(Console.CursorLeft - Spinner.Sequence[counter].Length, Console.CursorTop);
+                PrintSpinners(ref counter);
 
                 // Stop if time has passed the time user set to wait
-                if (_time != 0 && _stopwatch.Elapsed.Seconds >= _time) Stop();
+                if (_task == null && _time != 0 && _stopwatch.Elapsed.Seconds >= _time) Stop();
 
                 Thread.Sleep(_interval ?? Spinner.Interval);
             }
@@ -125,6 +119,22 @@ namespace DotSpinners
         {
             _active = false;
             return this;
+        }
+
+        private void PrintSpinners(ref int counter)
+        {
+            counter++;
+
+            // Loop spinner when it has reach it's last frame
+            if (counter >= Spinner.Sequence.Length)
+                counter = 0;
+
+            // Align text if center is on
+            SetAlignment(counter);
+
+            // Write and set cursor position
+            Console.Write(Spinner.Sequence[counter]);
+            Console.SetCursorPosition(Console.CursorLeft - Spinner.Sequence[counter].Length, Console.CursorTop);
         }
 
         private void LoadSpinners()
