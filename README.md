@@ -1,5 +1,6 @@
-<img src="https://raw.githubusercontent.com/kleinrein/dot-spinners/master/DotSpinners.Resources/DotSpinners.png" width="200">
+<img src="https://raw.githubusercontent.com/kleinrein/dot-spinners/master/DotSpinners.Resources/DotSpinners.png" width="150">
 # DotSpinners
+
 Console spinners in .NET
 <img src="https://github.com/kleinrein/dot-spinners/blob/master/DotSpinners.Resources/DotSpinners.gif" width="600">
 
@@ -14,7 +15,7 @@ The public API is small and supports method chaining.
 ```c#
 private static async Task DoWork() => await Task.Run(() => DoMoreWork());
 
-// Spin until passed task is completed (Reccomended)
+// Spin until passed task is completed
 new DotSpinner(SpinnerTypes.Pulse, DoWork()).Start();
 ```
 
