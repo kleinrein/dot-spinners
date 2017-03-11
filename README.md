@@ -8,7 +8,7 @@ Console spinners in .NET
 ```posh
 Install-Package DotSpinners 
 ```
-[Nuget](https://www.nuget.org/packages/DotSpinners/1.0.0)
+[Nuget](https://www.nuget.org/packages/DotSpinners/)
 
 ## Usage
 The public API is small and supports method chaining.
