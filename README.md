@@ -1,5 +1,6 @@
 <img src="https://raw.githubusercontent.com/kleinrein/dot-spinners/master/DotSpinners.Resources/DotSpinners.png" width="150">
-# DotSpinners
+
+# Dot Spinners
 Console spinners in .NET
 
 <img src="https://github.com/kleinrein/dot-spinners/blob/master/DotSpinners.Resources/DotSpinners.gif" width="600">
