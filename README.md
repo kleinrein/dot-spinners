@@ -1,5 +1,8 @@
 <img src="https://raw.githubusercontent.com/kleinrein/dot-spinners/master/DotSpinners.Resources/DotSpinners.png" width="150">
 
+[![NuGet](https://img.shields.io/nuget/dt/DotSpinners.svg)]()
+[![NuGet](https://img.shields.io/nuget/v/DotSpinners.svg)]()
+
 # Dot Spinners
 Console spinners in .NET
 
