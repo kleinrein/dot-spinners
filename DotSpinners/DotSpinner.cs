@@ -94,21 +94,34 @@ namespace DotSpinners
         /// <returns></returns>
         public DotSpinner Start()
         {
-            _active = true;
-            int counter = -1;
-
-            if (_time != 0) _stopwatch.Start();
-            while (!_task?.IsCompleted ?? _active)
+            bool cursorVisibility = Console.CursorVisible;
+            try
             {
-                PrintSpinners(ref counter);
+                _active = true;
+                int counter = -1;
 
-                // Stop if time has passed the time user set to wait
-                if (_task == null && _time != 0 && _stopwatch.Elapsed.Seconds >= _time) Stop();
+                if (_time != 0) _stopwatch.Start();
 
-                Thread.Sleep(_interval ?? Spinner.Interval);
+                // hide the cursor to make a nicer visual effect
+                Console.CursorVisible = false;
+
+                while (!_task?.IsCompleted ?? _active)
+                {
+                    PrintSpinners(ref counter);
+
+                    // Stop if time has passed the time user set to wait
+                    if (_task == null && _time != 0 && _stopwatch.Elapsed.Seconds >= _time) Stop();
+
+                    Thread.Sleep(_interval ?? Spinner.Interval);
+                }
+
+                return this;
             }
-            
-            return this;
+            finally
+            {
+                // restore cursor visibility
+                Console.CursorVisible = cursorVisibility;
+            }
         }
 
         /// <summary>
@@ -129,12 +142,16 @@ namespace DotSpinners
             if (counter >= Spinner.Sequence.Length)
                 counter = 0;
 
-            // Align text if center is on
-            SetAlignment(counter);
+            // the lock allows other Console.WriteLine calls to not interrupt the spinner
+            lock (this)
+            {
+                // Align text if center is on
+                SetAlignment(counter);
 
-            // Write and set cursor position
-            Console.Write(Spinner.Sequence[counter]);
-            Console.SetCursorPosition(Console.CursorLeft - Spinner.Sequence[counter].Length, Console.CursorTop);
+                // Write and set cursor position
+                Console.Write(Spinner.Sequence[counter]);
+                Console.SetCursorPosition(Math.Max(0, Console.CursorLeft - Spinner.Sequence[counter].Length), Console.CursorTop);
+            }
         }
 
         private void LoadSpinners()
