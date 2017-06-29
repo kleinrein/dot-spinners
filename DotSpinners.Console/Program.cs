@@ -17,7 +17,12 @@ namespace DotSpinners.Console
 
         private static void DoWork()
         {
-            Thread.Sleep(2000);
+            for (int i = 0; i < 20; i++)
+            {
+                //System.Console.WriteLine("Test " + i + " " + System.Console.CursorTop);
+                //System.Console.WriteLine("Test2222222222222222222 " + i + " " + System.Console.CursorTop);
+                Thread.Sleep(100);
+            }
         }
 
         private static async Task DoIt()
