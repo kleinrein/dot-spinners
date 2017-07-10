@@ -32,6 +32,7 @@ namespace DotSpinners
         Flippie,
         Loading,
         Unspecified,
-        Money
+        Money,
+        Ball
     }
 }

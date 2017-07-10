@@ -62,7 +62,7 @@
     <Content Include="spinners.txt" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="DotSpinners.1.0.0.0.nupkg" />
+    <None Include="DotSpinners.1.2.0.nupkg" />
     <None Include="DotSpinners.nuspec" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

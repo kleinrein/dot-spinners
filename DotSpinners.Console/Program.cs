@@ -162,6 +162,11 @@ namespace DotSpinners.Console
             new DotSpinner(SpinnerTypes.Money).Time(1).Start();
             System.Console.Clear();
             System.Console.WriteLine();
+
+            System.Console.WriteLine("Ball");
+            new DotSpinner(SpinnerTypes.Ball).Time(1).Start();
+            System.Console.Clear();
+            System.Console.WriteLine();
         }
         
     }
