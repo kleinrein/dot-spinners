@@ -1,11 +1,11 @@
-﻿using System;
+﻿using DotSpinners.Models;
+using DotSpinners.Properties;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using DotSpinners.Models;
-using DotSpinners.Properties;
 
 namespace DotSpinners
 {
@@ -42,7 +42,7 @@ namespace DotSpinners
         {
             this.Spinner = Spinners.FirstOrDefault(e => e.Name == spinnerType);
         }
-        
+
         /// <summary>
         /// Set looping time for spin
         /// If time is not set, it will go on until Stop() is called
@@ -79,7 +79,7 @@ namespace DotSpinners
 
         /// <summary>
         /// Random spinner
-        /// If no spinnertype is passed in constructor, random will be called
+        /// If no spinner type is passed to constructor, random will be called
         /// </summary>
         /// <returns></returns>
         public DotSpinner Random()
@@ -119,7 +119,7 @@ namespace DotSpinners
             }
             finally
             {
-                // restore cursor visibility
+                // Restore cursor visibility
                 Console.CursorVisible = cursorVisibility;
             }
         }
@@ -142,7 +142,7 @@ namespace DotSpinners
             if (counter >= Spinner.Sequence.Length)
                 counter = 0;
 
-            // the lock allows other Console.WriteLine calls to not interrupt the spinner
+            // The lock allows other Console.WriteLine calls to not interrupt the spinner
             lock (this)
             {
                 // Align text if center is on
@@ -156,6 +156,7 @@ namespace DotSpinners
 
         private void LoadSpinners()
         {
+            // Load spinners from a .txt file in resources
             var spinnersText = Resources.spinners;
             var lines = spinnersText.Split(new[] { Environment.NewLine }, StringSplitOptions.None);
 
