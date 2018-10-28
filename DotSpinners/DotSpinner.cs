@@ -26,19 +26,21 @@ namespace DotSpinners
         private bool _active = false;
         private readonly Random _rand = new Random();
         private readonly Task _task;
+        private readonly object _lock;
 
         /// <summary>
         /// Will run until task is completed if task is passed
         /// </summary>
         /// <param name="task"></param>
-        public DotSpinner(Task task = null)
+        public DotSpinner(Task task = null, object lockObj = null)
         {
+            _lock = lockObj ?? this;
             _task = task;
             LoadSpinners();
             Random();
         }
 
-        public DotSpinner(SpinnerTypes spinnerType, Task task = null) : this(task)
+        public DotSpinner(SpinnerTypes spinnerType, Task task = null, object lockObj = null) : this(task, lockObj)
         {
             this.Spinner = Spinners.FirstOrDefault(e => e.Name == spinnerType);
         }
@@ -143,7 +145,7 @@ namespace DotSpinners
                 counter = 0;
 
             // The lock allows other Console.WriteLine calls to not interrupt the spinner
-            lock (this)
+            lock (_lock)
             {
                 // Align text if center is on
                 SetAlignment(counter);
