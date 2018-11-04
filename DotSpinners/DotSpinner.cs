@@ -32,6 +32,7 @@ namespace DotSpinners
         /// Will run until task is completed if task is passed
         /// </summary>
         /// <param name="task"></param>
+        /// <param name="lockObj"></param>
         public DotSpinner(Task task = null, object lockObj = null)
         {
             _lock = lockObj ?? this;
@@ -42,7 +43,7 @@ namespace DotSpinners
 
         public DotSpinner(SpinnerTypes spinnerType, Task task = null, object lockObj = null) : this(task, lockObj)
         {
-            this.Spinner = Spinners.FirstOrDefault(e => e.Name == spinnerType);
+            Spinner = Spinners.FirstOrDefault(e => e.Name == spinnerType);
         }
 
         /// <summary>
@@ -53,7 +54,7 @@ namespace DotSpinners
         /// <returns></returns>
         public DotSpinner Time(int time)
         {
-            this._time = time;
+            _time = time;
             return this;
         }
 
@@ -64,7 +65,7 @@ namespace DotSpinners
         /// <returns></returns>
         public DotSpinner Interval(int interval)
         {
-            this._interval = interval;
+            _interval = interval;
             return this;
         }
 
@@ -75,7 +76,7 @@ namespace DotSpinners
         /// <returns></returns>
         public DotSpinner Center()
         {
-            this.TextAlignment = TextAlignment.Center;
+            TextAlignment = TextAlignment.Center;
             return this;
         }
 
@@ -86,7 +87,7 @@ namespace DotSpinners
         /// <returns></returns>
         public DotSpinner Random()
         {
-            this.Spinner = Spinners[_rand.Next(Spinners.Count)];
+            Spinner = Spinners[_rand.Next(Spinners.Count)];
             return this;
         }
 

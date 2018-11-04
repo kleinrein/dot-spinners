@@ -3,6 +3,7 @@
     public enum SpinnerTypes
     {
         Dots,
+        Dots2,
         DotsScrolling,
         DotsSimple,
         DotsRolling,
@@ -12,6 +13,7 @@
         Ping,
         Balloon,
         Stars,
+        Stars2,
         Flag,
         Bar,
         PercentageFive,
@@ -27,6 +29,8 @@
         Loading,
         Unspecified,
         Money,
-        Ball
+        Ball,
+        Plus,
+        Crocodiles
     }
 }

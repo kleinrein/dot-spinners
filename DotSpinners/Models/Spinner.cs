@@ -10,9 +10,9 @@ namespace DotSpinners
 
         public Spinner(string name, int interval, string[] sequence)
         {
-            this.Name = (SpinnerTypes)Enum.Parse(typeof(SpinnerTypes), name, true);
-            this.Interval = interval;
-            this.Sequence = sequence;
+            Name = (SpinnerTypes)Enum.Parse(typeof(SpinnerTypes), name, true);
+            Interval = interval;
+            Sequence = sequence;
         }
     }
 }
