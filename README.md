@@ -24,7 +24,7 @@ new DotSpinner(SpinnerTypes.Pulse, DoWork()).Start();
 ```
 
 ### Spinnertypes
-There is 25 spinnertypes to choose from. All of them can be found in this comma separated file:
+There are 30 spinner types to choose from. All of them can be found in this comma-separated file:
 https://github.com/kleinrein/dot-spinners/blob/master/DotSpinners/spinners.txt
 
 ## License
