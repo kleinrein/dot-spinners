@@ -10,7 +10,7 @@
     <projectUrl>https://github.com/kleinrein/dot-spinners</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>$description$</description>
-    <releaseNotes>Release 1.2.1.0</releaseNotes>
+    <releaseNotes>Release 1.2.2.0</releaseNotes>
     <copyright>Copyright Andreas Rein 2017</copyright>
     <tags>CliSpinner Console Spinner Cli Dots</tags>
   </metadata>
