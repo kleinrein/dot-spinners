@@ -131,7 +131,7 @@ namespace DotSpinners
                 _active = true;
                 int counter = -1;
 
-                if (_time != 0) _stopwatch.Start();
+                if (_time != 0) _stopwatch.Restart();
 
                 while (!_task?.IsCompleted ?? _active)
                 {
