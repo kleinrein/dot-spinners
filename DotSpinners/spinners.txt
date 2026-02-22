@@ -27,7 +27,8 @@ Unspecified,50,¤¤¤,_¤¤,¤_¤,¤¤_,¤¤¤,¤_¤,_¤¤
 Money,120,$,€,£
 Ball,70,o    , o   ,  o  ,   o ,    o,   o ,  o  , o   , o   
 Plus,90,+,x
-Crocodiles,70,v,<,^,>Braille,80,⠋,⠙,⠹,⠸,⠼,⠴,⠦,⠧,⠇,⠏
+Crocodiles,70,v,<,^,>
+Braille,80,⠋,⠙,⠹,⠸,⠼,⠴,⠦,⠧,⠇,⠏
 BrailleDots,80,⠁,⠂,⠄,⡀,⢀,⠠,⠐,⠈
 Arc,100,◜,◝,◞,◟
 CircleHalves,120,◐,◓,◑,◒
