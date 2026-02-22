@@ -7,15 +7,30 @@
     <Company>Andreas Rein</Company>
     <Product>DotSpinners</Product>
     <AssemblyCopyright>MIT</AssemblyCopyright>
-    <AssemblyVersion>2.0.0.0</AssemblyVersion>
-    <AssemblyFileVersion>2.0.0.0</AssemblyFileVersion>
-    <InformationalVersion>2.0.0</InformationalVersion>
+    <AssemblyVersion>2.0.1.0</AssemblyVersion>
+    <AssemblyFileVersion>2.0.1.0</AssemblyFileVersion>
+    <InformationalVersion>2.0.1</InformationalVersion>
     <Nullable>enable</Nullable>
     <LangVersion>9.0</LangVersion>
+    
+    <!-- NuGet Package Settings -->
+    <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+    <Version>2.0.1</Version>
+    <PackageId>DotSpinners</PackageId>
+    <Title>DotSpinners</Title>
+    <Authors>Andreas Rein</Authors>
+    <PackageProjectUrl>https://github.com/kleinrein/dot-spinners</PackageProjectUrl>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <RepositoryUrl>https://github.com/kleinrein/dot-spinners</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageTags>CliSpinner;Console;Spinner;Cli;Dots</PackageTags>
+    <PackageReleaseNotes>Release 2.0.1 - Fixed package metadata and added README</PackageReleaseNotes>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
   </PropertyGroup>
 
   <ItemGroup>
     <None Remove="DotSpinners.csproj.bak" />
+    <None Include="../README.md" Pack="true" PackagePath="\"/>
   </ItemGroup>
 
 </Project>
