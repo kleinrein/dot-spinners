@@ -1,4 +1,4 @@
-﻿using DotSpinners.Models;
+using DotSpinners.Models;
 using DotSpinners.Properties;
 using System;
 using System.Collections.Generic;
@@ -10,30 +10,33 @@ using System.Threading.Tasks;
 namespace DotSpinners
 {
     /// <summary>
-    /// DotSpinner
+    /// DotSpinner — animated console spinner with fluent API.
     /// </summary>
     public class DotSpinner
     {
-        // Properties
+        // ── Public properties ────────────────────────────────────────────────
         public TextAlignment TextAlignment { get; set; }
-        private List<Spinner> Spinners { get; } = new List<Spinner>();
-        private Spinner Spinner { get; set; }
 
-        // Fields
-        private int _time = 0;
-        private int? _interval;
+        // ── Private state ────────────────────────────────────────────────────
+        private readonly List<Spinner> _spinners = new List<Spinner>();
+        private Spinner? _spinner;
+
+        private int    _time;
+        private int?   _interval;
+        private string? _label;
+        private ConsoleColor? _color;
+        private ConsoleColor? _labelColor;
+
+        private volatile bool _active;
         private readonly Stopwatch _stopwatch = new Stopwatch();
-        private bool _active = false;
-        private readonly Random _rand = new Random();
-        private readonly Task _task;
+        private readonly Random    _rand = new Random();
+        private readonly Task? _task;
         private readonly object _lock;
 
-        /// <summary>
-        /// Will run until task is completed if task is passed
-        /// </summary>
-        /// <param name="task"></param>
-        /// <param name="lockObj"></param>
-        public DotSpinner(Task task = null, object lockObj = null)
+        // ── Constructors ─────────────────────────────────────────────────────
+
+        /// <summary>Picks a random spinner. Spins until <see cref="Stop"/> is called or <paramref name="task"/> completes.</summary>
+        public DotSpinner(Task? task = null, object? lockObj = null)
         {
             _lock = lockObj ?? this;
             _task = task;
@@ -41,140 +44,323 @@ namespace DotSpinners
             Random();
         }
 
-        public DotSpinner(SpinnerTypes spinnerType, Task task = null, object lockObj = null) : this(task, lockObj)
+        /// <summary>Uses the specified <paramref name="spinnerType"/>.</summary>
+        public DotSpinner(SpinnerTypes spinnerType, Task? task = null, object? lockObj = null)
+            : this(task, lockObj)
         {
-            Spinner = Spinners.FirstOrDefault(e => e.Name == spinnerType);
+            var spinner = _spinners.FirstOrDefault(e => e.Name == spinnerType);
+            if (spinner == null)
+            {
+                throw new ArgumentException($"Unknown spinner type: {spinnerType}", nameof(spinnerType));
+            }
+
+            _spinner = spinner;
         }
 
-        /// <summary>
-        /// Set looping time for spin
-        /// If time is not set, it will go on until Stop() is called
-        /// </summary>
-        /// <param name="time">Time in seconds</param>
-        /// <returns></returns>
-        public DotSpinner Time(int time)
+        // ── Fluent configuration ─────────────────────────────────────────────
+
+        /// <summary>Run for a fixed number of seconds (ignored when a task is provided).</summary>
+        public DotSpinner Time(int seconds)
         {
-            _time = time;
+            _time = seconds;
             return this;
         }
 
-        /// <summary>
-        /// Override default spinner interval
-        /// </summary>
-        /// <param name="interval"></param>
-        /// <returns></returns>
-        public DotSpinner Interval(int interval)
+        /// <summary>Override the spinner's default frame interval (milliseconds).</summary>
+        public DotSpinner Interval(int ms)
         {
-            _interval = interval;
+            _interval = ms;
             return this;
         }
 
-        /// <summary>
-        /// Center spinner in console
-        /// Defaults to false
-        /// </summary>
-        /// <returns></returns>
+        /// <summary>Center the spinner horizontally in the console window.</summary>
         public DotSpinner Center()
         {
             TextAlignment = TextAlignment.Center;
             return this;
         }
 
-        /// <summary>
-        /// Random spinner
-        /// If no spinner type is passed to constructor, random will be called
-        /// </summary>
-        /// <returns></returns>
+        /// <summary>Pick a random spinner type.</summary>
         public DotSpinner Random()
         {
-            Spinner = Spinners[_rand.Next(Spinners.Count)];
+            _spinner = _spinners[_rand.Next(_spinners.Count)];
             return this;
         }
 
+        /// <summary>Display a label to the right of the spinner frame.</summary>
+        public DotSpinner Label(string text)
+        {
+            _label = text;
+            return this;
+        }
+
+        /// <summary>Set the color of the spinner frame characters.</summary>
+        public DotSpinner Color(ConsoleColor color)
+        {
+            _color = color;
+            return this;
+        }
+
+        /// <summary>Set the color of the label text.</summary>
+        public DotSpinner LabelColor(ConsoleColor color)
+        {
+            _labelColor = color;
+            return this;
+        }
+
+        // ── Start / Stop ─────────────────────────────────────────────────────
+
         /// <summary>
-        /// Start spinner
+        /// Start the spinner synchronously (blocks until complete).
         /// </summary>
-        /// <returns></returns>
         public DotSpinner Start()
         {
-            bool cursorVisibility = Console.CursorVisible;
+            bool savedCursorVisible = false;
             try
             {
+                try
+                {
+                    savedCursorVisible = Console.CursorVisible;
+                    Console.CursorVisible = false;
+                }
+                catch (PlatformNotSupportedException)
+                {
+                    // Cursor visibility is not supported on this platform (e.g., Linux)
+                }
+
                 _active = true;
                 int counter = -1;
 
-                if (_time != 0) _stopwatch.Start();
+                if (_time != 0) _stopwatch.Restart();
 
-                // hide the cursor to make a nicer visual effect
-                Console.CursorVisible = false;
-
-                while (!_task?.IsCompleted ?? _active)
+                while (_active && (_task == null || !_task.IsCompleted))
                 {
-                    PrintSpinners(ref counter);
+                    PrintFrame(ref counter);
 
-                    // Stop if time has passed the time user set to wait
-                    if (_task == null && _time != 0 && _stopwatch.Elapsed.Seconds >= _time) Stop();
+                    if (_task == null && _time != 0 && _stopwatch.Elapsed.TotalSeconds >= _time)
+                        Stop();
 
-                    Thread.Sleep(_interval ?? Spinner.Interval);
+                    Thread.Sleep(_interval ?? _spinner!.Interval);
                 }
 
                 return this;
             }
             finally
             {
-                // Restore cursor visibility
-                Console.CursorVisible = cursorVisibility;
+                ClearLine();
+                try
+                {
+                    Console.CursorVisible = savedCursorVisible;
+                }
+                catch (PlatformNotSupportedException)
+                {
+                    // Cursor visibility is not supported on this platform
+                }
             }
         }
 
         /// <summary>
-        /// Stop spinner
+        /// Start the spinner asynchronously. Awaiting this method waits until the spinner stops.
+        /// Pass a <see cref="CancellationToken"/> to cancel from outside.
         /// </summary>
-        /// <returns></returns>
+        public async Task<DotSpinner> StartAsync(CancellationToken cancellationToken = default)
+        {
+            bool savedCursorVisible = false;
+            try
+            {
+                try
+                {
+                    savedCursorVisible = Console.CursorVisible;
+                    Console.CursorVisible = false;
+                }
+                catch (PlatformNotSupportedException)
+                {
+                    // Cursor visibility is not supported on this platform (e.g., Linux)
+                }
+
+                _active = true;
+                int counter = -1;
+
+                if (_time != 0) _stopwatch.Start();
+
+                while (!cancellationToken.IsCancellationRequested &&
+                       (!_task?.IsCompleted ?? _active))
+                {
+                    PrintFrame(ref counter);
+
+                    if (_task == null && _time != 0 && _stopwatch.Elapsed.TotalSeconds >= _time)
+                        Stop();
+
+                    await Task.Delay(_interval ?? _spinner!.Interval, cancellationToken)
+                              .ConfigureAwait(false);
+                }
+
+                return this;
+            }
+            catch (OperationCanceledException)
+            {
+                return this;
+            }
+            finally
+            {
+                ClearLine();
+                try
+                {
+                    Console.CursorVisible = savedCursorVisible;
+                }
+                catch (PlatformNotSupportedException)
+                {
+                    // Cursor visibility is not supported on this platform
+                }
+            }
+        }
+
+        /// <summary>
+        /// Run <paramref name="work"/> while displaying this spinner, then stop automatically.
+        /// Returns the result of <paramref name="work"/>.
+        /// </summary>
+        public async Task<T> RunAsync<T>(Func<Task<T>> work)
+        {
+            using var cts = new CancellationTokenSource();
+            var spinTask  = StartAsync(cts.Token);
+            T result;
+            try
+            {
+                result = await work().ConfigureAwait(false);
+            }
+            finally
+            {
+                cts.Cancel();
+                await spinTask.ConfigureAwait(false);
+            }
+            return result;
+        }
+
+        /// <summary>
+        /// Run <paramref name="work"/> while displaying this spinner, then stop automatically.
+        /// </summary>
+        public async Task RunAsync(Func<Task> work)
+        {
+            using var cts = new CancellationTokenSource();
+            var spinTask  = StartAsync(cts.Token);
+            try
+            {
+                await work().ConfigureAwait(false);
+            }
+            finally
+            {
+                cts.Cancel();
+                await spinTask.ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>Stop the spinner.</summary>
         public DotSpinner Stop()
         {
             _active = false;
             return this;
         }
 
-        private void PrintSpinners(ref int counter)
+        // ── Private helpers ──────────────────────────────────────────────────
+
+        private void PrintFrame(ref int counter)
         {
             counter++;
-
-            // Loop spinner when it has reach it's last frame
-            if (counter >= Spinner.Sequence.Length)
+            if (counter >= _spinner!.Sequence.Length)
                 counter = 0;
 
-            // The lock allows other Console.WriteLine calls to not interrupt the spinner
             lock (_lock)
             {
-                // Align text if center is on
                 SetAlignment(counter);
 
-                // Write and set cursor position
-                Console.Write(Spinner.Sequence[counter]);
-                Console.SetCursorPosition(Math.Max(0, Console.CursorLeft - Spinner.Sequence[counter].Length), Console.CursorTop);
+                string frame = _spinner!.Sequence[counter];
+                string output = string.IsNullOrEmpty(_label)
+                    ? frame
+                    : frame + " " + _label;
+
+                // Write spinner frame (optionally coloured)
+                if (_color.HasValue)
+                {
+                    ConsoleColor prev = Console.ForegroundColor;
+                    Console.ForegroundColor = _color.Value;
+                    Console.Write(frame);
+                    Console.ForegroundColor = prev;
+                }
+                else
+                {
+                    Console.Write(frame);
+                }
+
+                // Write label (optionally coloured)
+                if (!string.IsNullOrEmpty(_label))
+                {
+                    Console.Write(" ");
+                    if (_labelColor.HasValue)
+                    {
+                        ConsoleColor prev = Console.ForegroundColor;
+                        Console.ForegroundColor = _labelColor.Value;
+                        Console.Write(_label);
+                        Console.ForegroundColor = prev;
+                    }
+                    else
+                    {
+                        Console.Write(_label);
+                    }
+                }
+
+                // Move cursor back to start of output
+                int written = output.Length;
+                Console.SetCursorPosition(
+                    Math.Max(0, Console.CursorLeft - written),
+                    Console.CursorTop);
             }
+        }
+
+        private void ClearLine()
+        {
+            try
+            {
+                lock (_lock)
+                {
+                    int width = _spinner?.Sequence?.Length > 0
+                        ? (_spinner!.Sequence[0].Length + (_label?.Length ?? 0) + (_label != null ? 1 : 0))
+                        : 0;
+                    if (width > 0)
+                    {
+                        Console.Write(new string(' ', width));
+                        Console.SetCursorPosition(Math.Max(0, Console.CursorLeft - width), Console.CursorTop);
+                    }
+                }
+            }
+            catch { /* best-effort */ }
         }
 
         private void LoadSpinners()
         {
-            // Load spinners from a .txt file in resources
-            var spinnersText = Resources.spinners;
-            var lines = spinnersText.Split(new[] { Environment.NewLine }, StringSplitOptions.None);
+            var text  = Resources.spinners;
+            var lines = text.Split(new[] { "\r\n", "\n" }, StringSplitOptions.None);
 
             foreach (var line in lines.Where(l => !string.IsNullOrWhiteSpace(l)))
             {
-                var splitByComma = line.Split(',');
-                Spinners.Add(new Spinner(splitByComma[0], int.Parse(splitByComma[1]),
-                    splitByComma.ToList().Skip(2).ToArray()));
+                var parts = line.Split(',');
+                if (parts.Length < 3) continue;
+                _spinners.Add(new Spinner(
+                    parts[0],
+                    int.Parse(parts[1]),
+                    parts.Skip(2).ToArray()));
             }
         }
 
         private void SetAlignment(int counter)
         {
             if (TextAlignment == TextAlignment.Center)
-                Console.SetCursorPosition((Console.WindowWidth - Spinner.Sequence[counter].Length) / 2, Console.CursorTop);
+            {
+                int frameLen = _spinner!.Sequence[counter].Length
+                    + (_label != null ? 1 + _label.Length : 0);
+                Console.SetCursorPosition(
+                    Math.Max(0, (Console.WindowWidth - frameLen) / 2),
+                    Console.CursorTop);
+            }
         }
     }
 }
