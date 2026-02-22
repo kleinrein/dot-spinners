@@ -133,7 +133,7 @@ namespace DotSpinners
 
                 if (_time != 0) _stopwatch.Restart();
 
-                while (!_task?.IsCompleted ?? _active)
+                while (_active && (_task == null || !_task.IsCompleted))
                 {
                     PrintFrame(ref counter);
 
