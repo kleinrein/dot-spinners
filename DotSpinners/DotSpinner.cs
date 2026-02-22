@@ -48,8 +48,13 @@ namespace DotSpinners
         public DotSpinner(SpinnerTypes spinnerType, Task? task = null, object? lockObj = null)
             : this(task, lockObj)
         {
-            _spinner = _spinners.FirstOrDefault(e => e.Name == spinnerType)
-                       ?? _spinners[_rand.Next(_spinners.Count)];
+            var spinner = _spinners.FirstOrDefault(e => e.Name == spinnerType);
+            if (spinner == null)
+            {
+                throw new ArgumentException($"Unknown spinner type: {spinnerType}", nameof(spinnerType));
+            }
+
+            _spinner = spinner;
         }
 
         // ── Fluent configuration ─────────────────────────────────────────────
