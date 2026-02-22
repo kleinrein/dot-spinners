@@ -1,18 +1,19 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <AssemblyName>DotSpinners</AssemblyName>
-    <Description>Console spinners with simple and minimal api</Description>
+    <Description>Console spinners with a simple and minimal fluent API. 70+ spinners including Braille, emoji, arrows, bouncing bars and more.</Description>
     <Company>Andreas Rein</Company>
     <Product>DotSpinners</Product>
     <AssemblyCopyright>MIT</AssemblyCopyright>
-    <AssemblyVersion>1.2.2.0</AssemblyVersion>
-    <AssemblyFileVersion>1.2.2.0</AssemblyFileVersion>
-    <InformationalVersion>1.2.2.0</InformationalVersion>
+    <AssemblyVersion>2.0.0.0</AssemblyVersion>
+    <AssemblyFileVersion>2.0.0.0</AssemblyFileVersion>
+    <InformationalVersion>2.0.0</InformationalVersion>
+    <Nullable>enable</Nullable>
+    <LangVersion>9.0</LangVersion>
   </PropertyGroup>
 
- 
   <ItemGroup>
     <None Remove="DotSpinners.csproj.bak" />
   </ItemGroup>
