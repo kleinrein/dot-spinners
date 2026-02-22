@@ -110,15 +110,23 @@ namespace DotSpinners
         /// </summary>
         public DotSpinner Start()
         {
-            bool savedCursorVisible = Console.CursorVisible;
+            bool savedCursorVisible = false;
             try
             {
+                try
+                {
+                    savedCursorVisible = Console.CursorVisible;
+                    Console.CursorVisible = false;
+                }
+                catch (PlatformNotSupportedException)
+                {
+                    // Cursor visibility is not supported on this platform (e.g., Linux)
+                }
+
                 _active = true;
                 int counter = -1;
 
                 if (_time != 0) _stopwatch.Start();
-
-                Console.CursorVisible = false;
 
                 while (!_task?.IsCompleted ?? _active)
                 {
@@ -135,7 +143,14 @@ namespace DotSpinners
             finally
             {
                 ClearLine();
-                Console.CursorVisible = savedCursorVisible;
+                try
+                {
+                    Console.CursorVisible = savedCursorVisible;
+                }
+                catch (PlatformNotSupportedException)
+                {
+                    // Cursor visibility is not supported on this platform
+                }
             }
         }
 
@@ -145,15 +160,23 @@ namespace DotSpinners
         /// </summary>
         public async Task<DotSpinner> StartAsync(CancellationToken cancellationToken = default)
         {
-            bool savedCursorVisible = Console.CursorVisible;
+            bool savedCursorVisible = false;
             try
             {
+                try
+                {
+                    savedCursorVisible = Console.CursorVisible;
+                    Console.CursorVisible = false;
+                }
+                catch (PlatformNotSupportedException)
+                {
+                    // Cursor visibility is not supported on this platform (e.g., Linux)
+                }
+
                 _active = true;
                 int counter = -1;
 
                 if (_time != 0) _stopwatch.Start();
-
-                Console.CursorVisible = false;
 
                 while (!cancellationToken.IsCancellationRequested &&
                        (!_task?.IsCompleted ?? _active))
@@ -176,7 +199,14 @@ namespace DotSpinners
             finally
             {
                 ClearLine();
-                Console.CursorVisible = savedCursorVisible;
+                try
+                {
+                    Console.CursorVisible = savedCursorVisible;
+                }
+                catch (PlatformNotSupportedException)
+                {
+                    // Cursor visibility is not supported on this platform
+                }
             }
         }
 
